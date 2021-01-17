@@ -2,10 +2,9 @@
 
 require './ayar.php';
 
-
-
 ?>
 
 
-<a href="blog.php?id=54">Id gönder</a>
-<a href="./blog.php">Blog.php</a>
+<a href="sayfa2.php?id=43">Blog.php</a>
+
+<!-- buradan get değeri ile sayfa ikiye gidiyorum. -->
