@@ -19,7 +19,7 @@
             if(!isset($_COOKIE[$row['id']])){
                 $update = $db->prepare("UPDATE yazilar SET goruntulenme=:g WHERE id=:id");
                 $update->execute(array(':g' => $row['goruntulenme'] + 1,':id'=>$id));
-                setcookie($row['id'], "1", strtotime('+10 minutes'));
+                setcookie($row['id'], "1", time() + 3600);
             }
 
             
