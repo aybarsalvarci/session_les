@@ -1,11 +1,40 @@
-<?php
+<?php 
+    
+    require_once 'baglan.php';
+    require 'ayar.php';
 
-require './ayar.php';
+    $yazilar = $db->prepare("SELECT * FROM yazilar");
+    $yazilar->execute();
 
-?>
+    if ($yazilar->rowCount()) {
+        
+        ?>
+           
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>BAŞLIK</th>
+                <th>İŞLEM</th>
+            </tr>
 
-<h2>Burası index sayfası.</h2>
+        <?php
+            
+            foreach ($yazilar as $row) {
+                ?>
 
-<a href="sayfa2.php?id=43">sayfa2</a>
+                <tr>
+                    <td><?php echo $row['id']; ?></td>
+                    <td><?php echo $row['baslik']; ?></td>
+                    <td><a href="detay.php?id=<?php echo $row['id'];?>">Devamını oku</td>
+                </tr>
 
-<!-- buradan get değeri ile sayfa ikiye gidiyorum. -->
+                 <?php
+            }
+
+
+            echo "</table>";
+
+    }
+
+
+ ?>
