@@ -1,98 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detaylar</title>
-</head>
-<body>
-    
-
-
-
-
-<?php 
-
-    require_once 'baglan.php';
-    require 'ayar.php';
-
-      if ($_GET['id']) {
-        
-        $id = $_GET['id'];
-        
-        $sorgu = $db->prepare("SELECT * FROM yazilar WHERE id=:id");
-        $sorgu->execute([':id' => $id]);
-
-        if ($sorgu->rowCount()) {
-        
-            $row = $sorgu->fetch(PDO::FETCH_ASSOC);
-        
-            
-            
-            if(!isset($_COOKIE[$row['id']])){
-                $update = $db->prepare("UPDATE yazilar SET goruntulenme=:g WHERE id=:id");
-                $update->execute(array(':g' => $row['goruntulenme'] + 1,':id'=>$id));
-                setcookie($row['id'], "1", time() + 3600);
-            }
-
-            
-
-            echo $row['baslik'];
-            echo'<hr/>';
-            echo $row['icerik']."<hr>";
-            echo '<b>Görüntülenme</b> => '.$row['goruntulenme'];
-
-        }else{
-
-          header('location:hit.php');
-        }
-
-      }else{
-          header('location:hit.php');
-      }
-
-?>
-
-
-<br><br><br><br><br><br><br><br><br>
-
 <?php
 
 
-    if($_GET['id']){
+require_once 'ayar.php';
+require_once 'baglan.php';
 
-        $id = $_GET['id'];
+if(isset($_GET['id'])){
 
-        $sorgu = $db->prepare("SELECT * FROM yazilar WHERE id != :id");
-        $sorgu->execute([':id' => $id]);
+    //update işlemi
 
-        if($sorgu->rowCount()){
+    $id = $_GET['id'];
+    
+    if(!isset($_COOKIE[$id])){
+        $query = $db->prepare('SELECT goruntulenme FROM yazilar WHERE id = :id');
+        $query->execute([':id' => $id]);
+        $view = $query->fetch(PDO::FETCH_ASSOC);
+        $view = $view['goruntulenme'];
 
-            $data = $sorgu->fetchAll(PDO::FETCH_ASSOC);
-
-            foreach($data as $row): ?>
-
-                <p><?= $row['baslik'] ?></p>
-                <p><?= $row['icerik'] ?></p>
-                <p><?= $row['goruntulenme'] ?></p>
-                <hr>
-             <?php    
-            endforeach;
-
-
-        }
-
-
+        $query = $db->prepare('UPDATE yazilar SET goruntulenme = :view WHERE id = :id');
+        $query->execute([':view' => $view+1, ':id' => $id]);
+        setcookie($id, 1, time() + 120); 
     }
 
 
 
-?>
+    $query = $db->query('SELECT * FROM yazilar ORDER BY id ASC')->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-
-
-
-</body>
-</html>
+    foreach($query as $row){
+        echo $row['baslik'] . '<br/>';
+        echo $row['icerik'] . '<br/>';
+        echo $row['goruntulenme'];
+        echo '<hr>';
+    }
+}
