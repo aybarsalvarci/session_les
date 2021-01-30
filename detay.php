@@ -7,7 +7,7 @@ require_once 'baglan.php';
 if(isset($_GET['id'])){
 
 
-    $query = $db->query('SELECT * FROM yazilar ORDER BY id ASC')->fetchAll(PDO::FETCH_ASSOC);
+    $query = $db->query('SELECT * FROM yazilar ORDER BY goruntulenme DESC')->fetchAll(PDO::FETCH_ASSOC);
 
     foreach($query as $row){
         echo $row['baslik'] . '<br/>';
